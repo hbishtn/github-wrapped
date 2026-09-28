@@ -1,0 +1,156 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f5f5f7;
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  padding: 24px;
+}
+
+.intro {
+  text-align: center;
+  max-width: 400px;
+}
+
+.intro h1 {
+  font-size: 26px;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.intro p {
+  color: #6b6b6b;
+  font-size: 15px;
+  margin-bottom: 24px;
+}
+
+.btn-primary {
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-primary:hover {
+  background: #333;
+}
+
+.btn-secondary {
+  margin-top: 20px;
+  background: transparent;
+  color: #6b6b6b;
+  border: 1px solid #d8d8d8;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  background: #eee;
+}
+
+.loader {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e0e0e0;
+  border-top: 3px solid #1a1a1a;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  color: #6b6b6b;
+  font-size: 14px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  width: 420px;
+  max-width: 100%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.06);
+  border: 1px solid #ececec;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ececec;
+  margin-bottom: 20px;
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.card-header h2 {
+  font-size: 16px;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: #999;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  word-break: break-word;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #999;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.card-footer {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #ececec;
+  font-size: 12px;
+  color: #bbb;
+  text-align: center;
+}

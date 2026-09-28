@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import axios from 'axios'
+import './Dashboard.css'
 
 const BACKEND_URL = 'http://localhost:8000'
 
@@ -34,24 +35,75 @@ function Dashboard() {
     }, 2000)
   }
 
-  return (
-    <div className="app">
-      <h1>Welcome, {username}</h1>
-
-      {status === 'idle' && (
-        <button onClick={generateWrapped}>Generate My Wrapped</button>
-      )}
-
-      {status === 'processing' && <p>Generating... thoda wait kar</p>}
-
-      {status === 'done' && data && (
-        <div className="wrapped-card">
-          <p>Total Contributions: {data.total_contributions}</p>
-          <p>Longest Streak: {data.longest_streak} days</p>
-          <p>Top Language: {data.top_language}</p>
-          <p>Top Repos: {data.top_repos.join(', ')}</p>
+  if (status === 'idle') {
+    return (
+      <div className="page">
+        <div className="intro">
+          <h1>Welcome, {username}</h1>
+          <p>Generate your GitHub activity summary for this year.</p>
+          <button className="btn-primary" onClick={generateWrapped}>
+            Generate Wrapped
+          </button>
         </div>
-      )}
+      </div>
+    )
+  }
+
+  if (status === 'processing') {
+    return (
+      <div className="page">
+        <div className="loader" />
+        <p className="loading-text">Fetching your GitHub data...</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="page">
+      <div className="card">
+        <div className="card-header">
+          <div className="avatar">{username[0].toUpperCase()}</div>
+          <div>
+            <h2>{username}</h2>
+            <span className="subtitle">GitHub Wrapped · 2026</span>
+          </div>
+        </div>
+
+        <div className="stats-grid">
+          <div className="stat">
+            <span className="stat-value">{data.total_contributions}</span>
+            <span className="stat-label">Contributions</span>
+          </div>
+          <div className="stat">
+            <span className="stat-value">{data.longest_streak}</span>
+            <span className="stat-label">Longest Streak</span>
+          </div>
+          <div className="stat">
+            <span className="stat-value">{data.top_language}</span>
+            <span className="stat-label">Top Language</span>
+          </div>
+          <div className="stat">
+            <span className="stat-value">{data.total_prs}</span>
+            <span className="stat-label">Pull Requests</span>
+          </div>
+          <div className="stat">
+            <span className="stat-value">{data.most_active_day}</span>
+            <span className="stat-label">Most Active Day</span>
+          </div>
+          <div className="stat">
+            <span className="stat-value">{data.most_starred_repo}</span>
+            <span className="stat-label">Top Repo</span>
+          </div>
+        </div>
+
+        <div className="card-footer">
+          <span>github.com/{username}</span>
+        </div>
+      </div>
+
+      <button className="btn-secondary" onClick={() => window.location.reload()}>
+        Regenerate
+      </button>
     </div>
   )
 }
