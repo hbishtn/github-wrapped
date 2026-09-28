@@ -64,7 +64,7 @@ def github_callback(request):
 
     # Abhi ke liye simple JSON response — baad mein frontend pe redirect karenge
     from django.shortcuts import redirect as django_redirect
-    return django_redirect(f"http://localhost:5173?username={profile.github_username}")
+    return django_redirect(f"http://localhost:5173/dashboard?username={profile.github_username}")
 
 def trigger_wrapped(request, username):
     """User ne 'Generate' dabaya — cache check karo, warna Celery task chalao."""
