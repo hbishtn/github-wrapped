@@ -21,6 +21,7 @@ query($username: String!) {
             date
             weekday
             contributionCount
+            contributionLevel
           }
         }
       }
@@ -113,7 +114,15 @@ def _process_raw_data(raw: dict) -> dict:
         "most_starred_repo_stars": most_starred[1],
         "followers_count": raw["followers"]["totalCount"],
         "calendar_days": [
-            {"date": day["date"], "count": day["contributionCount"]}
+            {
+                "date": day["date"],
+                "count": day["contributionCount"],
+                "weekday": day["weekday"],
+                "level": {
+                    "NONE": 0, "FIRST_QUARTILE": 1, "SECOND_QUARTILE": 2,
+                    "THIRD_QUARTILE": 3, "FOURTH_QUARTILE": 4,
+                }.get(day["contributionLevel"], 0),
+            }
             for day in all_days
         ],
 
