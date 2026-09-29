@@ -57,14 +57,26 @@
 }
 
 /* Repo list */
-.tile.list { background: var(--panel-2); color: var(--text); }
+.tile.list { background: var(--panel-2); color: var(--text); min-height: 0; }
 .list .label { color: var(--muted); opacity: 1; }
-.list ul { list-style: none; }
+.list .label.sub { display: block; margin-top: 12px; }
+.list ul { list-style: none; flex: 1; min-height: 0; overflow-y: auto; }
 .list li {
-  padding: 0.55rem 0; font-weight: 600; font-size: 0.95rem;
+  padding: 0.5rem 0; font-weight: 600; font-size: 0.9rem;
   border-bottom: 1px solid #ffffff1f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .list li:last-child { border-bottom: 0; }
+
+/* Contribution heatmap — small, blue squares */
+.heatmap {
+  display: grid; grid-auto-flow: column;
+  grid-template-rows: repeat(7, 9px); grid-auto-columns: 9px;
+  gap: 3px; margin-top: 6px;
+}
+.heatmap .cell { border-radius: 2px; background: #ffffff14; }
+.heatmap .cell.l1 { background: #38bdf855; }
+.heatmap .cell.l2 { background: #38bdf8a8; }
+.heatmap .cell.l3 { background: #38bdf8; }
 
 /* Idle / loading / error screens */
 .stage {

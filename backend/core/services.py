@@ -112,6 +112,10 @@ def _process_raw_data(raw: dict) -> dict:
         "most_starred_repo": most_starred[0],
         "most_starred_repo_stars": most_starred[1],
         "followers_count": raw["followers"]["totalCount"],
+        "calendar_days": [
+            {"date": day["date"], "count": day["contributionCount"]}
+            for day in all_days
+        ],
 
         "generated_at": datetime.utcnow().isoformat(),
     }

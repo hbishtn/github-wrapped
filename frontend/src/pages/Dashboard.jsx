@@ -38,6 +38,26 @@ function Avatar({ username }) {
   )
 }
 
+function Heatmap({ days }) {
+  if (!days || !days.length) return null
+  const recent = days.slice(-84)
+  const max = Math.max(1, ...recent.map((d) => d.count))
+  const level = (c) => {
+    if (c === 0) return 0
+    const r = c / max
+    if (r > 0.66) return 3
+    if (r > 0.33) return 2
+    return 1
+  }
+  return (
+    <div className="heatmap" role="img" aria-label="Contribution calendar, last 12 weeks">
+      {recent.map((d) => (
+        <span key={d.date} className={`cell l${level(d.count)}`} title={`${d.date}: ${d.count} contributions`} />
+      ))}
+    </div>
+  )
+}
+
 function Tile({ area, color, label, note, index, children }) {
   return (
     <section className={`tile ${color}`} style={{ gridArea: area, '--i': index }}>
@@ -209,7 +229,9 @@ function Dashboard() {
         </Tile>
 
         <section className="tile list" style={{ gridArea: 'list', '--i': 9 }}>
-          <span className="label">Recently active repos</span>
+          <span className="label">Last 12 weeks</span>
+          <Heatmap days={data.calendar_days} />
+          <span className="label sub">Recently active repos</span>
           <ul>
             {data.top_repos.map((name) => <li key={name}>{name}</li>)}
           </ul>
