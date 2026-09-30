@@ -6,7 +6,11 @@
 .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .brand { font-weight: 800; font-size: 1.05rem; letter-spacing: -0.02em; }
 .brand span { color: var(--muted); font-weight: 400; margin-left: 8px; }
-.actions { display: flex; gap: 10px; }
+.actions { display: flex; align-items: center; gap: 10px; }
+.range-select {
+  background: var(--panel-2); color: var(--text); border: 1px solid #ffffff26;
+  border-radius: 999px; padding: 0.55rem 1rem; font: inherit; font-weight: 600; font-size: 0.85rem;
+}
 
 .grid {
   flex: 1; min-height: 0; display: grid; gap: clamp(10px, 1.4vw, 16px);

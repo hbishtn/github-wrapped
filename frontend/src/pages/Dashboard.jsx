@@ -139,6 +139,7 @@ function Dashboard() {
   const [status, setStatus] = useState('idle') // idle | processing | done | error
   const [data, setData] = useState(null)
   const [copied, setCopied] = useState(false)
+  const [range, setRange] = useState('year')
   const timer = useRef(null)
 
   useEffect(() => () => clearInterval(timer.current), [])
@@ -153,18 +154,18 @@ function Dashboard() {
     setStatus('error')
   }
 
-  const generate = async () => {
+  const generate = async (r = range) => {
     setStatus('processing')
     try {
-      const { data: res } = await axios.get(`${BACKEND_URL}/auth/wrapped/${username}/`)
+      const { data: res } = await axios.get(`${BACKEND_URL}/auth/wrapped/${username}/?range=${r}`)
       if (res.status === 'done') return finish(res.data)
 
       let tries = 0
       timer.current = setInterval(async () => {
         if (++tries > 40) return fail()
         try {
-          const { data: r } = await axios.get(`${BACKEND_URL}/auth/wrapped/status/${res.task_id}/`)
-          if (r.status === 'done') finish(r.data)
+          const { data: r2 } = await axios.get(`${BACKEND_URL}/auth/wrapped/status/${res.task_id}/`)
+          if (r2.status === 'done') finish(r2.data)
         } catch {
           fail()
         }
@@ -172,6 +173,11 @@ function Dashboard() {
     } catch {
       fail()
     }
+  }
+
+  const changeRange = (r) => {
+    setRange(r)
+    generate(r)
   }
 
   const copySummary = async () => {
@@ -229,16 +235,27 @@ function Dashboard() {
     )
   }
 
-  const year = new Date(data.generated_at).getFullYear()
   const weekend = data.is_weekend_warrior
+  const RANGE_LABELS = { week: 'Last week', month: 'Last month', year: 'This year', lifetime: 'Whole GitHub' }
 
   return (
     <div className="shell">
       <header className="bar">
-        <div className="brand">GitHub Wrapped <span>{year}</span></div>
+        <div className="brand">GitHub Wrapped <span>{RANGE_LABELS[range]}</span></div>
         <div className="actions">
+          <select
+            className="range-select"
+            value={range}
+            onChange={(e) => changeRange(e.target.value)}
+            aria-label="Time range"
+          >
+            <option value="week">Last week</option>
+            <option value="month">Last month</option>
+            <option value="year">This year</option>
+            <option value="lifetime">Whole GitHub</option>
+          </select>
           <button className="btn ghost" onClick={copySummary}>{copied ? 'Copied' : 'Copy summary'}</button>
-          <button className="btn" onClick={generate}>Regenerate</button>
+          <button className="btn" onClick={() => generate(range)}>Regenerate</button>
         </div>
       </header>
 

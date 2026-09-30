@@ -66,9 +66,16 @@ def github_callback(request):
     from django.shortcuts import redirect as django_redirect
     return django_redirect(f"http://localhost:5173/dashboard?username={profile.github_username}")
 
+VALID_RANGES = {"week", "month", "year", "lifetime"}
+
+
 def trigger_wrapped(request, username):
     """User ne 'Generate' dabaya — cache check karo, warna Celery task chalao."""
-    cached = cache.get(f"wrapped:{username}")
+    range_key = request.GET.get("range", "year")
+    if range_key not in VALID_RANGES:
+        range_key = "year"
+
+    cached = cache.get(f"wrapped:{username}:{range_key}")
     if cached:
         return JsonResponse({"status": "done", "data": cached})
 
@@ -77,7 +84,7 @@ def trigger_wrapped(request, username):
     except GithubProfile.DoesNotExist:
         return JsonResponse({"error": "User not authenticated first"}, status=404)
 
-    task = generate_wrapped_task.delay(profile.id)
+    task = generate_wrapped_task.delay(profile.id, range_key)
     return JsonResponse({"status": "processing", "task_id": task.id})
 
 

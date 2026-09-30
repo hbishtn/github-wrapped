@@ -6,13 +6,13 @@ from .services import fetch_github_wrapped_data
 CACHE_TTL = 60 * 60 * 6  # 6 ghante
 
 @shared_task
-def generate_wrapped_task(profile_id: int) -> dict:
+def generate_wrapped_task(profile_id: int, range_key: str = "year") -> dict:
     """Background mein GitHub stats fetch karke DB + cache mein save karta hai."""
     profile = GithubProfile.objects.get(id=profile_id)
 
-    data = fetch_github_wrapped_data(profile)
+    data = fetch_github_wrapped_data(profile, range_key)
 
     WrappedResult.objects.create(profile=profile, data=data)
-    cache.set(f"wrapped:{profile.github_username}", data, CACHE_TTL)
+    cache.set(f"wrapped:{profile.github_username}:{range_key}", data, CACHE_TTL)
 
     return data
