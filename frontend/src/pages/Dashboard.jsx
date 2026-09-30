@@ -66,56 +66,130 @@ function buildWeeks(days) {
 
 function Heatmap({ days }) {
   if (!days || !days.length) return null
-  const weeks = buildWeeks(days)
-  const total = days.reduce((sum, d) => sum + d.count, 0)
 
-  const monthLabels = weeks.map((week, i) => {
+  const weeks = buildWeeks(days)
+
+  const total = days.reduce((sum, day) => sum + day.count, 0)
+
+  const monthLabels = weeks.map((week, index) => {
     const firstDay = week.find(Boolean)
     if (!firstDay) return ''
-    const month = new Date(`${firstDay.date}T00:00:00Z`).getUTCMonth()
-    const prevWeek = weeks[i - 1]
-    const prevDay = prevWeek && prevWeek.find(Boolean)
-    const prevMonth = prevDay ? new Date(`${prevDay.date}T00:00:00Z`).getUTCMonth() : -1
-    return month !== prevMonth ? MONTHS[month] : ''
+
+    const currentMonth = new Date(
+      `${firstDay.date}T00:00:00Z`
+    ).getUTCMonth()
+
+    const previousWeek = weeks[index - 1]
+    const previousDay = previousWeek?.find(Boolean)
+
+    const previousMonth = previousDay
+      ? new Date(`${previousDay.date}T00:00:00Z`).getUTCMonth()
+      : -1
+
+    return currentMonth !== previousMonth
+      ? MONTHS[currentMonth]
+      : ''
   })
 
   return (
-    <div className="heatmap-block">
-      <p className="heatmap-total">{total.toLocaleString()} contributions in the last year</p>
-      <div className="heatmap-scroll">
-        <div className="heatmap-grid" style={{ '--weeks': weeks.length }}>
-          <div className="heatmap-months">
-            {monthLabels.map((label, i) => <span key={i}>{label}</span>)}
-          </div>
-          <div className="heatmap-body">
-            <div className="heatmap-daylabels">
-              {[0, 1, 2, 3, 4, 5, 6].map((w) => <span key={w}>{DAY_ROWS[w] || ''}</span>)}
-            </div>
-            <div className="heatmap-weeks">
-              {weeks.map((week, i) => (
-                <div className="heatmap-week" key={i}>
-                  {week.map((day, w) =>
-                    day ? (
-                      <span
-                        key={day.date}
-                        className={`heatmap-cell l${day.level}`}
-                        title={`${day.count} contribution${day.count === 1 ? '' : 's'} on ${fmtDate(day.date)}`}
-                      />
-                    ) : (
-                      <span key={w} className="heatmap-cell empty" />
-                    )
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+    <div className="contribution-map">
+
+      <div className="contribution-header">
+        <div>
+          <span className="contribution-title">
+            Contribution activity
+          </span>
+
+          <span className="contribution-count">
+            {total.toLocaleString()} contributions
+          </span>
         </div>
       </div>
-      <div className="heatmap-legend">
-        <span>Less</span>
-        {[0, 1, 2, 3, 4].map((l) => <span key={l} className={`heatmap-cell l${l}`} />)}
-        <span>More</span>
+
+      <div className="contribution-chart">
+
+        {/* Month labels */}
+        <div className="month-row">
+          <div className="day-label-space" />
+
+          <div className="month-labels">
+            {monthLabels.map((month, index) => (
+              <span key={index}>
+                {month}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="calendar-content">
+
+          {/* Day labels */}
+          <div className="day-labels">
+            <span>Sun</span>
+            <span></span>
+            <span>Tue</span>
+            <span></span>
+            <span>Thu</span>
+            <span></span>
+            <span>Sat</span>
+          </div>
+
+          {/* Contribution grid */}
+          <div className="weeks-grid">
+
+            {weeks.map((week, weekIndex) => (
+              <div className="week-column" key={weekIndex}>
+
+                {Array.from({ length: 7 }).map((_, dayIndex) => {
+
+                  const day = week[dayIndex]
+
+                  if (!day) {
+                    return (
+                      <span
+                        key={dayIndex}
+                        className="contribution-cell empty"
+                      />
+                    )
+                  }
+
+                  return (
+                    <span
+                      key={day.date}
+                      className={`contribution-cell level-${day.level}`}
+                      title={`${day.count} contribution${
+                        day.count === 1 ? '' : 's'
+                      } • ${fmtDate(day.date)}`}
+                    />
+                  )
+                })}
+
+              </div>
+            ))}
+
+          </div>
+
+        </div>
       </div>
+
+      {/* Legend */}
+      <div className="contribution-footer">
+
+        <span>Less</span>
+
+        <div className="legend-cells">
+          {[0, 1, 2, 3, 4].map((level) => (
+            <span
+              key={level}
+              className={`contribution-cell level-${level}`}
+            />
+          ))}
+        </div>
+
+        <span>More</span>
+
+      </div>
+
     </div>
   )
 }
@@ -308,7 +382,6 @@ function Dashboard() {
         </Tile>
 
         <section className="tile list" style={{ gridArea: 'list', '--i': 9 }}>
-          <span className="label">Last 12 weeks</span>
           <Heatmap days={data.calendar_days} />
           <span className="label sub">Recently active repos</span>
           <ul>
